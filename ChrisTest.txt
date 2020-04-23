@@ -1,0 +1,9 @@
+Hello James. Here is the same information I proposed to in the Discord Channel.
+So to add changes to a document James, the users click create a file or edit on one of the files already created.
+
+"You’re creating a file in a project you don’t have write access to.
+We’ve created a fork of this project for you to commit your proposed changes to. 
+Submitting a change will create the file in a new branch in your fork, so you can send a pull request."
+
+After which you, the repository owner will have to accept or deny the proposed changes in the pull-request. 
+This way it prevents someone from completely fucking up your code.
