@@ -52,7 +52,7 @@ public class Batter extends Application {
     NP : number of pitches
     */
     
-    private String date;
+    public String date;
     private TextField playerField;
     private TextField atBatsField;
     private TextField runsScoredField;
@@ -166,6 +166,8 @@ public class Batter extends Application {
         {
             submitPSButtonClicked();
             dateLabel.setText("You chose " + comboBox.getValue());
+            date = (String) comboBox.getValue();
+            System.out.println(date);
         });
         
         HBox buttonBox = new HBox(10);
@@ -182,8 +184,6 @@ public class Batter extends Application {
         
         // set error messages in labels
         Validation v = new Validation();
-        
-        System.out.println(date);
         
         //dateLabel.setText(v.isPresent(date, "Date") );
         playerLabel.setText(v.isPresent(playerField.getText(), "Player") );
