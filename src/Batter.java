@@ -5,6 +5,7 @@
  */
 
 // import statements
+import java.text.NumberFormat;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -51,6 +52,7 @@ public class Batter extends Application {
     NP : number of pitches
     */
     
+    private String date;
     private TextField playerField;
     private TextField atBatsField;
     private TextField runsScoredField;
@@ -62,6 +64,7 @@ public class Batter extends Application {
     private TextField assistField;
     private TextField leftOnBaseField;
     
+    private Label dateLabel;
     private Label playerLabel;
     private Label atBatsLabel;
     private Label runsScoredLabel;
@@ -86,14 +89,17 @@ public class Batter extends Application {
         Scene scene = new Scene(grid, 500, 500);
         
         ComboBox comboBox = new ComboBox();
-        comboBox.getItems().add("Feb 14, 2020");
-        comboBox.getItems().add("Feb 15, 2020");
-        comboBox.getItems().add("Feb 16, 2020");
-        comboBox.getItems().add("Feb 22, 2020");
-        comboBox.getItems().add("Mar 11, 2020");
+        comboBox.getItems().addAll("Feb 14, 2020",
+                                   "Feb 15, 2020",
+                                   "Feb 16, 2020",
+                                   "Feb 22, 2020",
+                                   "Mar 11, 2020");
+        comboBox.getSelectionModel().select(0);      
         
         grid.add(new Label("Date of Game:"), 0, 0);
         grid.add(comboBox, 1, 0);
+        dateLabel = new Label();
+        grid.add(dateLabel, 2, 0);
         
         grid.add(new Label("Player's Name:"), 0, 1);
         playerField = new TextField();
@@ -155,17 +161,46 @@ public class Batter extends Application {
         leftOnBaseLabel = new Label();
         grid.add(leftOnBaseLabel, 2, 10);
         
-        Button calculateButton = new Button("Submit Player Stats");
-        //calculateButton.setOnAction(event -> submitPSButtonClicked());
+        Button submitButton = new Button("Submit Player Stats");
+        submitButton.setOnAction(e -> 
+        {
+            submitPSButtonClicked();
+            dateLabel.setText("You chose " + comboBox.getValue());
+        });
         
         HBox buttonBox = new HBox(10);
-        buttonBox.getChildren().add(calculateButton);       
+        buttonBox.getChildren().add(submitButton);       
         buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
         grid.add(buttonBox, 1, 11);
         
         primaryStage.setTitle("Batter Application");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+    
+    private void submitPSButtonClicked() {
+        
+        // set error messages in labels
+        Validation v = new Validation();
+        
+        System.out.println(date);
+        
+        //dateLabel.setText(v.isPresent(date, "Date") );
+        playerLabel.setText(v.isPresent(playerField.getText(), "Player") );
+        atBatsLabel.setText(v.isPresent(atBatsField.getText(), "AB") );
+        runsScoredLabel.setText(v.isPresent(runsScoredField.getText(), "R") );
+        baseHitsLabel.setText(v.isPresent(baseHitsField.getText(), "H") );
+        runsBattedInLabel.setText(v.isPresent(runsBattedInField.getText(), "RBI") );
+        walksAllowedLabel.setText(v.isPresent(walksAllowedField.getText(), "BB") );
+        strikeOutLabel.setText(v.isPresent(strikeOutField.getText(), "SO") );
+        putoutLabel.setText(v.isPresent(putoutField.getText(), "PO") );
+        assistLabel.setText(v.isPresent(assistField.getText(), "A") );
+        leftOnBaseLabel.setText(v.isPresent(leftOnBaseField.getText(), "LOB") );
+        
+        
+        
+        
+                
     }
 
     // main method
