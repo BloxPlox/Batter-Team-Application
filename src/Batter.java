@@ -18,6 +18,32 @@ import javafx.stage.Stage;
 // 
 public class Batter extends Application {
     
+    /* 
+    Batter Acronyms
+    --------------------
+    AB : at-bats
+    R : runs scored
+    H : base hits
+    RBI : runs batted in
+    BB : walks allowed
+    SO : strike out
+    PO : putout
+    A : assist
+    LOB : left on base
+    
+    Pitcher Acronyms
+    --------------------
+    IP : innings pitched
+    H : base hits
+    R : runs scored
+    ER : earned run
+    BB : walks allowed
+    SO : strike out
+    AB : at-bats
+    BF : batters faced
+    NP : number of pitches
+    */
+    
     @Override
     public void start(Stage primaryStage) {
         Button btn = new Button();
@@ -35,7 +61,7 @@ public class Batter extends Application {
         
         Scene scene = new Scene(root, 300, 250);
         
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Batter Application");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
