@@ -1,3 +1,8 @@
+/*
+ * Title: Final Project
+ * Date: 4-27-20
+ * Author: James Nagy
+ */
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
