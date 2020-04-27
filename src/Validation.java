@@ -4,8 +4,6 @@ Date: 4/24/20
 Assignment: Final Project
 */
 
-
-
 public class Validation {
     private String lineEnd;
     
