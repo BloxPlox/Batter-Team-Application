@@ -5,7 +5,7 @@
  */
 
 /* 
-    BatterGUI Acronyms
+    Batter Acronyms
     --------------------
     AB : at-bats
     R : runs scored
@@ -31,28 +31,41 @@
 */
 
 // import statements
+import java.util.List;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
-// batter class
-// add updates here:
-// James Nagy: 4-24-20 - added text fields, labels, and combo box for user input 
+                                
+/* -------------------------- Batter Class -------------------------------------
+ Add updates here:
+
+ James Nagy: 4-24-20 - added text fields, labels, and combo box for user input
+
+ James Nagy: 4-26-20 - updated the submitPSButtonClicked() to validate user 
+    input and added the addBatter() method to write the batter to a file
+
+ James Nagy: 4-27-20 - added combo box for batter report and added the 
+    submitReportButtonClicked() method
+----------------------------------------------------------------------------- */
 public class BatterGUI extends Application {
     
     private static final BatterFile FILE = new BatterFile();
     
     public String date;
+    public String dateReport;
     public TextField playerField;
     public TextField atBatsField;
     public TextField runsScoredField;
@@ -88,6 +101,7 @@ public class BatterGUI extends Application {
         
         Scene scene = new Scene(grid, 500, 500);
         
+        // creates a drop down combo box with game dates
         ComboBox comboBox = new ComboBox();
         comboBox.getItems().addAll("Feb 14, 2020",
                                    "Feb 15, 2020",
@@ -96,7 +110,6 @@ public class BatterGUI extends Application {
                                    "Mar 11, 2020");
         comboBox.getSelectionModel().select(0);       
         date = (String) comboBox.getValue();
-         
         
         grid.add(new Label("Date of Game:"), 0, 0);
         grid.add(comboBox, 1, 0);
@@ -184,6 +197,41 @@ public class BatterGUI extends Application {
         buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
         grid.add(buttonBox, 1, 11);
         
+        // Combo box for batter report
+        ComboBox comboBox2 = new ComboBox();
+        comboBox2.getItems().addAll("Feb 14, 2020",
+                                   "Feb 15, 2020",
+                                   "Feb 16, 2020",
+                                   "Feb 22, 2020",
+                                   "Mar 11, 2020");
+        comboBox2.getSelectionModel().select(0);       
+        dateReport = (String) comboBox2.getValue();
+        
+        grid.add(new Label("Select date:"), 0, 13);
+        grid.add(comboBox2, 1, 13);
+        
+        
+        // Create action event 
+        EventHandler<ActionEvent> event2 = 
+                  (ActionEvent e) -> {
+                      
+                      dateReport = (String) comboBox2.getValue(); 
+        }; 
+  
+        // Set on action 
+        comboBox2.setOnAction(event2);
+        
+        Button reportButton = new Button("Create Player Report");
+        reportButton.setOnAction(e -> 
+        {
+            submitReportButtonClicked();           
+        });
+        
+        HBox buttonBox2 = new HBox(10);
+        buttonBox2.getChildren().add(reportButton);       
+        buttonBox2.setAlignment(Pos.BOTTOM_RIGHT);
+        grid.add(buttonBox2, 2, 13);
+        
         primaryStage.setTitle("Batter Application");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -243,9 +291,60 @@ public class BatterGUI extends Application {
                 leftOnBaseLabel.getText().isEmpty() ) {
                 
                 // addBatter() method adds stats to file
-                addBatter();
+                addBatter();               
             }            
         }               
+    }
+    
+    public void submitReportButtonClicked() {
+        
+        // Batting Average = Total number of hits / Total number of at bats
+        
+        /*
+            The total bases is calculated in the following way, where TB is the 
+            total bases and 1B, 2B, 3B, and HR are the number of singles, doubles, 
+            triples, and home runs, respectively. 
+            TB = 1B + 2 × 2B + 3 × 3B + 4 × HR
+        */
+        
+        // Slugging Percentage (SLG) = Total Bases ÷ At Bats
+        
+        /* 
+            On-base percentage is calculated using the following formula, 
+            where H is Hits, BB is Bases on Balls (Walks), HBP is times Hit By a 
+            Pitch, AB is At bats, and SF is Sacrifice Flies. 
+            OBP = (H + BB + HBP) / (AB + BB + HBP + SF)
+        */
+        
+        List<Batter> batters = FILE.getAll();
+        Batter b;
+        StringBuilder sb = new StringBuilder();
+        int p = 0;
+        for (int i = 0; i < batters.size(); i++) {
+            
+            b = batters.get(i);
+            
+            if (b.getDate().equals(dateReport)) {
+                sb.append(Integer.toString(p + 1) + ". ");
+                sb.append("Player: ");
+                sb.append(b.getPlayerName());
+                sb.append(" | Batting Average: ");
+                sb.append(" | Total Bases: ");
+                sb.append(" | Slugging Percentage: ");
+                sb.append(" | On-Base Percentage: ");
+                sb.append("\n");
+                p++;
+            }          
+        }               
+        
+        Alert reportAlert = new Alert(Alert.AlertType.INFORMATION);
+        reportAlert.setResizable(true);        
+        reportAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        reportAlert.getDialogPane().setMinWidth(600);
+        reportAlert.setTitle("Batter Report");
+        reportAlert.setHeaderText("Batter Report for Game Date: " + dateReport);
+        reportAlert.setContentText(sb.toString());      
+        reportAlert.showAndWait();      
     }
     
     public void addBatter() {
@@ -295,6 +394,5 @@ public class BatterGUI extends Application {
     //
     public static void main(String[] args) {
         launch(args);
-    }
-    
+    }   
 }
