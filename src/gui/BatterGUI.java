@@ -44,6 +44,7 @@ import business.Batter;
 import business.BatterReport;
 import db.BatterFile;
 import db.BatterReportTextFile;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -53,6 +54,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -85,6 +87,10 @@ public class BatterGUI extends Application {
     
     // variables
     private static BatterFile FILE = null;
+    private static BatterFile FILE2 = null;
+    private static BatterFile FILE3 = null;
+    private static BatterFile FILE4 = null;
+    private static BatterFile FILE5 = null;
     private static BatterReportTextFile FILE_REPORT = null;
     private String fileName = null;
     
@@ -122,6 +128,13 @@ public class BatterGUI extends Application {
     private Label assistLabel;
     private Label leftOnBaseLabel;
     
+    // Creates the checkboxes
+    CheckBox date1;
+    CheckBox date2;
+    CheckBox date3;
+    CheckBox date4;
+    CheckBox date5;
+    
     // returns the selected game date for the report to create/update
     public static String getReportGameDate() {
         return dateReport;
@@ -150,7 +163,7 @@ public class BatterGUI extends Application {
         grid.setVgap(10);   
         
         // sets the size of the window
-        Scene scene = new Scene(grid, 500, 700);
+        Scene scene = new Scene(grid, 800, 700);
         
         // creates a drop down combo box with game dates
         ComboBox comboBox = new ComboBox();
@@ -160,7 +173,16 @@ public class BatterGUI extends Application {
                                    "Feb 22, 2020",
                                    "Mar 11, 2020");
         comboBox.getSelectionModel().select(0);       
-        date = (String) comboBox.getValue();        
+        date = (String) comboBox.getValue(); 
+        
+        // Defines checkbox values
+        date1 = new CheckBox("Feb 14, 2020");
+        date2 = new CheckBox("Feb 15, 2020");
+        date3 = new CheckBox("Feb 16, 2020");
+        date4 = new CheckBox("Feb 22, 2020");
+        date5 = new CheckBox("Mar 11, 2020");
+        
+        HBox dates = new HBox(date1, date2, date3, date4, date5);
         
         grid.add(new Label("Date of Game:"), 0, 0);
         grid.add(comboBox, 1, 0);        
@@ -271,7 +293,7 @@ public class BatterGUI extends Application {
         });
         
         HBox buttonBox = new HBox(10);
-        buttonBox.getChildren().add(submitButton);       
+        buttonBox.getChildren().add(submitButton);  
         buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
         grid.add(buttonBox, 1, 16);
         
@@ -301,12 +323,26 @@ public class BatterGUI extends Application {
         reportButton.setOnAction(e -> 
         {
             submitReportButtonClicked();           
-        });       
+        });    
+        
+        // Creates button for summary
+        Button summaryButton = new Button("Summary Player Stats");
+        summaryButton.setOnAction(e -> 
+        {
+            summaryPSButtonClicked();           
+        });
         
         HBox buttonBox2 = new HBox(10);
-        buttonBox2.getChildren().add(reportButton);       
+        buttonBox2.getChildren().add(reportButton);  
         buttonBox2.setAlignment(Pos.BOTTOM_RIGHT);
         grid.add(buttonBox2, 2, 19);
+        
+        // Adds new button and checkbox
+        HBox buttonBox3 = new HBox(10);
+        buttonBox3.getChildren().add(summaryButton);
+        buttonBox3.setAlignment(Pos.BOTTOM_RIGHT);
+        grid.add(dates, 0, 20);
+        grid.add(buttonBox3, 2, 20);
         
         primaryStage.setTitle("Batter Application");
         primaryStage.setScene(scene);
@@ -391,6 +427,213 @@ public class BatterGUI extends Application {
                 addBatter();               
             }            
         }               
+    }
+    
+    private List<Batter> getBatterList(List<Batter> ListBatter1, List<Batter> ListBatter2) {
+        
+        List<Batter> combinedList = new ArrayList<Batter>();
+        Batter b1, b2, b3;
+        
+         for (int i = 0; i < ListBatter1.size(); i++) {
+             b1 = ListBatter1.get(i);
+             b2 = new Batter(b1.getPlayerName(), 
+                             b1.getAtBats(), 
+                             b1.getRunsScored(),
+                             b1.getBaseHits(),
+                             b1.getDoubles(),
+                             b1.getTriples(),
+                             b1.getHomeRuns(),
+                             b1.getHitByPitch(),
+                             b1.getRunsBattedIn(),
+                             b1.getSacrificeFly(),
+                             b1.getWalksAllowed(),
+                             b1.getStrikeOut(),
+                             b1.getPutout(),
+                             b1.getAssist(),
+                             b1.getLeftOnBase());
+         }
+        
+        
+        int playerNameMatch = -1;
+        for (int i = 0; i < ListBatter2.size(); i++) {
+            
+            b1 = ListBatter2.get(i);
+            playerNameMatch = -1;
+            for (int j = 0; j < ListBatter1.size(); j++) {
+                
+                b2 = ListBatter1.get(j);
+                if (b1.getPlayerName().equalsIgnoreCase(b2.getPlayerName())) {
+                    playerNameMatch = j;
+                }
+                
+            }
+            if (playerNameMatch != -1) {               
+                
+                b2 = ListBatter1.get(playerNameMatch);
+                b3 = new Batter(b1.getPlayerName(), b1.getAtBats() + b2.getAtBats(), 
+                                       b1.getRunsScored() + b2.getRunsScored(),
+                                       b1.getBaseHits() + b2.getBaseHits(),
+                                       b1.getDoubles() + b2.getDoubles(),
+                                       b1.getTriples() + b2.getTriples(),
+                                       b1.getHomeRuns() + b2.getHomeRuns(),
+                                       b1.getHitByPitch() + b2.getHitByPitch(),
+                                       b1.getRunsBattedIn() + b2.getRunsBattedIn(),
+                                       b1.getSacrificeFly() + b2.getSacrificeFly(),
+                                       b1.getWalksAllowed() + b2.getWalksAllowed(),
+                                       b1.getStrikeOut() + b2.getStrikeOut(),
+                                       b1.getPutout() + b2.getPutout(),
+                                       b1.getAssist() + b2.getAssist(),
+                                       b1.getLeftOnBase() + b2.getLeftOnBase());
+                combinedList.add(b3);
+            }
+            else {
+                combinedList.add(b1); 
+            }
+            
+        }
+        
+        return combinedList;
+    }
+    
+    
+    
+    public void summaryPSButtonClicked() {
+        
+        //Defines all fields for the summary
+        double baseHits = 0;
+        double atBats = 0;
+        double batAvg = 0;
+        double doubles = 0;
+        double triples = 0;
+        double homeRuns = 0;
+        double totalBases = 0;
+        double slugPer = 0;
+        double walksAllowed = 0;
+        double hitsByPitch = 0;
+        double sacrificeFly = 0;
+        double basePer = 0;
+
+        double putout = 0;
+        double runsScored = 0;
+        double runsBattedIn = 0;
+        double strikeOut = 0;
+        double assist = 0;
+        double leftOnBase = 0;
+        
+        //Defines all files to be read
+        FILE = new BatterFile("Feb 14, 2020");
+        FILE2 = new BatterFile("Feb 15, 2020");
+        FILE3 = new BatterFile("Feb 16, 2020");
+        FILE4 = new BatterFile("Feb 22, 2020");
+        FILE5 = new BatterFile("Mar 11, 2020");
+        List<Batter> batters = FILE.getAll();
+        List<Batter> batters2 = FILE2.getAll();
+        List<Batter> batters3 = FILE3.getAll();
+        List<Batter> batters4 = FILE4.getAll();
+        List<Batter> batters5 = FILE5.getAll();
+        List<Batter> combinedBatters = new ArrayList<Batter>();
+        
+        
+        Batter b;
+        StringBuilder sb = new StringBuilder();
+        int batterID = 1;     
+        
+        //Tests to see which dates are selected and then adds the data together
+        if(date1.isSelected()) {
+            combinedBatters = getBatterList(combinedBatters, batters);
+        }
+        
+        if(date2.isSelected()) {
+            combinedBatters = getBatterList(combinedBatters, batters2);
+        }
+        
+        if(date3.isSelected()) {
+            combinedBatters = getBatterList(combinedBatters, batters3);
+        }
+        
+        if(date4.isSelected()) {
+            combinedBatters = getBatterList(combinedBatters, batters4);
+        }
+        
+        if(date5.isSelected()) {
+            combinedBatters = getBatterList(combinedBatters, batters5);
+        }
+        
+        if (combinedBatters != null) {
+            for (int i = 0; i < combinedBatters.size(); i++) {
+            
+                b = combinedBatters.get(i);
+            
+                //String playerName = b.getPlayerName();
+            
+                // calculate batting average
+                baseHits = b.getBaseHits();            
+                atBats = b.getAtBats();           
+                batAvg = baseHits / atBats;
+                batAvg = (double) Math.round(batAvg * 1000) / 1000;           
+            
+                // calculate total bases
+                doubles = b.getDoubles();
+                triples = b.getTriples();
+                homeRuns = b.getHomeRuns();
+                totalBases = (baseHits + (2 * doubles) + (3 * triples) + (4 * homeRuns));
+                totalBases = (double) Math.round(totalBases * 1000) / 1000;           
+            
+                // calculate slugging percentage
+                slugPer = totalBases / atBats;
+                slugPer = (double) Math.round(slugPer * 1000) / 1000;            
+            
+                // calculate on-base percentage
+                walksAllowed = b.getWalksAllowed();
+                hitsByPitch = b.getHitByPitch();
+                sacrificeFly = b.getSacrificeFly();
+                basePer = (baseHits + walksAllowed + hitsByPitch) / (atBats + walksAllowed + hitsByPitch + sacrificeFly);
+                basePer = (double) Math.round(basePer * 1000) / 1000;    
+            
+                runsScored = b.getRunsScored();
+                putout = b.getPutout();
+                runsBattedIn = b.getRunsBattedIn();
+                strikeOut = b.getStrikeOut();
+                assist = b.getAssist();
+                leftOnBase = b.getLeftOnBase();
+            
+                sb.append(Integer.toString(batterID)).append(". ").
+                   append("Player: ").append(b.getPlayerName()).append("\n").
+                   append("\t" + "(AB): ").append(atBats).append(" | ").
+                   append("(R): ").append(runsScored).append(" | ").
+                   append("(H/1B): ").append(baseHits).append(" | ").
+                   append("(2B): ").append(doubles).append(" | ").
+                   append("(3B): ").append(triples).append(" | ").
+                   append("(HR): ").append(homeRuns).append(" | ").
+                   append("(HBP): ").append(hitsByPitch).append(" | ").
+                   append("(RBI): ").append(runsBattedIn).append(" | ").
+                   append("(SF): ").append(sacrificeFly).append(" | ").
+                   append("(BB): ").append(walksAllowed).append(" | ").
+                   append("(SO): ").append(strikeOut).append(" | ").
+                   append("(PO): ").append(putout).append(" | ").
+                   append("(A): ").append(assist).append(" | ").
+                   append("(LOB): ").append(leftOnBase).append("\n").
+                   append("\t" + "Batting Average: ").append(batAvg).
+                   append(" | Total Bases: ").append(totalBases).                
+                   append(" | Slugging Percentage: ").append(slugPer).
+                   append(" | On-Base Percentage: ").append(basePer).
+                   append("\n");             
+                
+            }
+        }
+        else {
+            sb.append("No dates selected!");
+        }
+        
+        // displays the generated report to the user
+        Alert reportAlert = new Alert(Alert.AlertType.INFORMATION);
+        reportAlert.setResizable(true);        
+        reportAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        reportAlert.getDialogPane().setMinWidth(800);
+        reportAlert.setTitle("Batter Report");
+        reportAlert.setHeaderText("Batter Total Summary");
+        reportAlert.setContentText(sb.toString());      
+        reportAlert.showAndWait();
     }
     
     public void submitReportButtonClicked() {
