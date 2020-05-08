@@ -134,6 +134,7 @@ public class BatterGUI extends Application {
     private Label putoutLabel;
     private Label assistLabel;
     private Label leftOnBaseLabel;
+    private Label resultLabel;
     
     // Creates the checkboxes
     CheckBox date1;
@@ -284,27 +285,44 @@ public class BatterGUI extends Application {
         leftOnBaseLabel = new Label();
         grid.add(leftOnBaseLabel, 2, 15);
         
+        resultLabel = new Label();
+        grid.add(resultLabel, 1, 16);
+        
         Button submitButton = new Button("Submit Player Stats");       
         submitButton.setOnAction(e -> 
         {
             submitPSButtonClicked();           
         });
         
-        Button clearButton = new Button("Help");
-        clearButton.setOnAction(e -> 
+        Button helpButton = new Button("Help");
+        helpButton.setOnAction(e -> 
         {
             submitHelpButtonClicked();           
         });
         
+        Button clearButton = new Button("Clear");
+        clearButton.setOnAction(e -> 
+        {
+            submitClearButtonClicked();           
+        });
+        
+        Button exitButton = new Button("Exit");
+        exitButton.setOnAction(e -> 
+        {
+            submitExitButtonClicked();           
+        });
+        
         HBox buttonBox = new HBox(10);
-        buttonBox.getChildren().add(clearButton);
+        buttonBox.getChildren().add(helpButton);
         buttonBox.getChildren().add(submitButton);
+        buttonBox.getChildren().add(clearButton);
+        buttonBox.getChildren().add(exitButton);
         buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
-        grid.add(buttonBox, 0, 16, 2, 1);
+        grid.add(buttonBox, 0, 18, 2, 1);
         
         final Separator sepHor = new Separator();
         sepHor.setValignment(VPos.CENTER);
-        GridPane.setConstraints(sepHor, 0, 17);
+        GridPane.setConstraints(sepHor, 0, 19);
         GridPane.setColumnSpan(sepHor, 3);
         grid.getChildren().add(sepHor);
         
@@ -312,7 +330,7 @@ public class BatterGUI extends Application {
         sepVert1.setOrientation(Orientation.VERTICAL);
         sepVert1.setValignment(VPos.CENTER);
         sepVert1.setPrefHeight(80);
-        GridPane.setConstraints(sepVert1, 1, 18);
+        GridPane.setConstraints(sepVert1, 1, 19);
         GridPane.setRowSpan(sepVert1, 2);
         grid.getChildren().add(sepVert1);
         
@@ -346,7 +364,7 @@ public class BatterGUI extends Application {
         VBox reportBox = new VBox(selectDate, comboBox2, reportButton);
         reportBox.setAlignment(Pos.CENTER_RIGHT);
         reportBox.setSpacing(10);     
-        grid.add(reportBox, 1, 19);       
+        grid.add(reportBox, 1, 20);       
               
         // Creates button for summary
         Button summaryButton = new Button("Summary Player Stats");
@@ -370,7 +388,7 @@ public class BatterGUI extends Application {
 //        buttonBox3.getChildren().add(summaryButton);
 //        buttonBox3.setAlignment(Pos.BOTTOM_RIGHT);
         
-        grid.add(summaryBox, 0, 19);
+        grid.add(summaryBox, 0, 20);
         grid.setVgap(10);
         //grid.add(buttonBox3, 2, 20);
         
@@ -457,7 +475,12 @@ public class BatterGUI extends Application {
                 
                 // addBatter() method adds stats to file
                 FILE = new BatterFile();
-                addBatter();               
+                addBatter();
+                
+                /* 
+                Created by: Nathan Minnick 5-8-20 - Informs user of player stats are enetered successfully
+                */
+                resultLabel.setText("Player Stats Submitted");
             }            
         }               
     }
@@ -526,6 +549,55 @@ public class BatterGUI extends Application {
         }       
         return combinedList;
     }   
+    
+    /* 
+        Created by: Nathan Minnick 5-8-20 - Created the submitClearButtonClicked() method
+    */
+    public void submitClearButtonClicked() {      
+        
+        //empties all fields when clicked
+        playerField.setText("");
+        atBatsField.setText("");
+        runsScoredField.setText("");
+        baseHitsField.setText("");
+        doubleField.setText("");
+        tripleField.setText("");
+        homeRunField.setText("");
+        hitByPitchField.setText("");
+        runsBattedInField.setText("");
+        sacrificeFlyField.setText("");
+        walksAllowedField.setText("");
+        strikeOutField.setText("");
+        putoutField.setText("");
+        assistField.setText("");
+        leftOnBaseField.setText("");
+        
+        //empties all labels when clicked
+        playerLabel.setText("");
+        atBatsLabel.setText("");
+        runsScoredLabel.setText("");
+        baseHitsLabel.setText("");
+        doubleLabel.setText("");
+        tripleLabel.setText("");
+        homeRunLabel.setText("");
+        hitByPitchLabel.setText("");
+        runsBattedInLabel.setText("");
+        sacrificeFlyLabel.setText("");
+        walksAllowedLabel.setText("");
+        strikeOutLabel.setText("");
+        putoutLabel.setText("");
+        assistLabel.setText("");
+        leftOnBaseLabel.setText("");  
+        resultLabel.setText("");
+    }
+    
+    /* 
+        Created by: Nathan Minnick 5-8-20 - Created the submitExitButtonClicked() method
+    */
+    public void submitExitButtonClicked() {      
+        
+        System.exit(0);         
+    }
     
     /* 
         Edited by: James Nagy 5-6-20 - Fixed accumulating stats & repeating players
