@@ -15,7 +15,7 @@ import business.BatterReport;
 import gui.BatterGUI;
 
 //creates BatterReportTextFile for storing values
-public final class BatterReportTextFile implements DAO<BatterReport> {
+public final class BatterReportTextFile {
     private List<BatterReport> batters = null;
     private Path battersPath = null;
     private File battersFile = null;
