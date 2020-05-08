@@ -27,6 +27,26 @@ public class BatterFile {
     //private String document = "batter.txt";
     private String fileName = null;
 
+    public BatterFile(String gameDate) {
+        
+        fileName = "batter_stats_(" + gameDate + ").txt";
+        
+        batterPath = Paths.get(fileName);
+        try {
+            // if the file doesn't exist, it is created
+            if (Files.notExists(batterPath)) {
+                System.out.println("Text file '" + batterPath + "' doesn't exist.");
+                System.out.println("Creating file: " + 
+                        batterPath.toAbsolutePath() + "\n");
+                Files.createFile(batterPath);
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+        batter = this.getAll();
+    }
+    
     public BatterFile() {
         
         String gameDate = BatterGUI.getGameDate();
@@ -63,8 +83,8 @@ public class BatterFile {
                 while (line != null) {
                     
                     String[] fields = line.split("~");
-                    //String date = fields[0];
-                    String playerName = fields[0];
+                    
+                    String playerName = fields[0];                   
                     int atBats = Integer.parseInt(fields[1]);
                     int runsScored = Integer.parseInt(fields[2]);
                     int baseHits = Integer.parseInt(fields[3]);
