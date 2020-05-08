@@ -50,17 +50,21 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
                                 
@@ -81,7 +85,10 @@ import javafx.stage.Stage;
  James Nagy 5-4-20 - reworked the GUI, BatterFile, BatterReportTextFile, and
     BatterReport files have the entered data be written out to a file 
     identified by the date of the game. Added comments, fixed bugs, tried to
-    make things more efficient. Also added all files to packages. 
+    make things more efficient. Also added all files to packages.
+
+ James Nagy 5-4-20 - Fixed player summary summaryPSButtonClicked() method. Added
+    Help Button and Separators. 
 ----------------------------------------------------------------------------- */
 public class BatterGUI extends Application {
     
@@ -163,7 +170,7 @@ public class BatterGUI extends Application {
         grid.setVgap(10);   
         
         // sets the size of the window
-        Scene scene = new Scene(grid, 800, 700);
+        Scene scene = new Scene(grid, 525, 850);
         
         // creates a drop down combo box with game dates
         ComboBox comboBox = new ComboBox();
@@ -173,16 +180,7 @@ public class BatterGUI extends Application {
                                    "Feb 22, 2020",
                                    "Mar 11, 2020");
         comboBox.getSelectionModel().select(0);       
-        date = (String) comboBox.getValue(); 
-        
-        // Defines checkbox values
-        date1 = new CheckBox("Feb 14, 2020");
-        date2 = new CheckBox("Feb 15, 2020");
-        date3 = new CheckBox("Feb 16, 2020");
-        date4 = new CheckBox("Feb 22, 2020");
-        date5 = new CheckBox("Mar 11, 2020");
-        
-        HBox dates = new HBox(date1, date2, date3, date4, date5);
+        date = (String) comboBox.getValue();       
         
         grid.add(new Label("Date of Game:"), 0, 0);
         grid.add(comboBox, 1, 0);        
@@ -286,16 +284,37 @@ public class BatterGUI extends Application {
         leftOnBaseLabel = new Label();
         grid.add(leftOnBaseLabel, 2, 15);
         
-        Button submitButton = new Button("Submit Player Stats");
+        Button submitButton = new Button("Submit Player Stats");       
         submitButton.setOnAction(e -> 
         {
             submitPSButtonClicked();           
         });
         
+        Button clearButton = new Button("Help");
+        clearButton.setOnAction(e -> 
+        {
+            submitHelpButtonClicked();           
+        });
+        
         HBox buttonBox = new HBox(10);
-        buttonBox.getChildren().add(submitButton);  
+        buttonBox.getChildren().add(clearButton);
+        buttonBox.getChildren().add(submitButton);
         buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
-        grid.add(buttonBox, 1, 16);
+        grid.add(buttonBox, 0, 16, 2, 1);
+        
+        final Separator sepHor = new Separator();
+        sepHor.setValignment(VPos.CENTER);
+        GridPane.setConstraints(sepHor, 0, 17);
+        GridPane.setColumnSpan(sepHor, 3);
+        grid.getChildren().add(sepHor);
+        
+        final Separator sepVert1 = new Separator();
+        sepVert1.setOrientation(Orientation.VERTICAL);
+        sepVert1.setValignment(VPos.CENTER);
+        sepVert1.setPrefHeight(80);
+        GridPane.setConstraints(sepVert1, 1, 18);
+        GridPane.setRowSpan(sepVert1, 2);
+        grid.getChildren().add(sepVert1);
         
         // Combo box for batter report
         ComboBox comboBox2 = new ComboBox();
@@ -307,9 +326,6 @@ public class BatterGUI extends Application {
         comboBox2.getSelectionModel().select(0);       
         dateReport = (String) comboBox2.getValue();
         
-        grid.add(new Label("Select date:"), 0, 19);
-        grid.add(comboBox2, 1, 19);        
-        
         // sets the game date for the report
         EventHandler<ActionEvent> event2 = 
                   (ActionEvent e) -> {                    
@@ -319,12 +335,19 @@ public class BatterGUI extends Application {
         // Set on action 
         comboBox2.setOnAction(event2);
         
+        Label selectDate = new Label("Select date:");
+        
         Button reportButton = new Button("Create Player Report");
         reportButton.setOnAction(e -> 
         {
             submitReportButtonClicked();           
-        });    
+        });
         
+        VBox reportBox = new VBox(selectDate, comboBox2, reportButton);
+        reportBox.setAlignment(Pos.CENTER_RIGHT);
+        reportBox.setSpacing(10);     
+        grid.add(reportBox, 1, 19);       
+              
         // Creates button for summary
         Button summaryButton = new Button("Summary Player Stats");
         summaryButton.setOnAction(e -> 
@@ -332,23 +355,33 @@ public class BatterGUI extends Application {
             summaryPSButtonClicked();           
         });
         
-        HBox buttonBox2 = new HBox(10);
-        buttonBox2.getChildren().add(reportButton);  
-        buttonBox2.setAlignment(Pos.BOTTOM_RIGHT);
-        grid.add(buttonBox2, 2, 19);
+        // Defines checkbox values
+        date1 = new CheckBox("Feb 14, 2020");
+        date2 = new CheckBox("Feb 15, 2020");
+        date3 = new CheckBox("Feb 16, 2020");
+        date4 = new CheckBox("Feb 22, 2020");
+        date5 = new CheckBox("Mar 11, 2020");
+        
+        VBox summaryBox = new VBox(date1, date2, date3, date4, date5, summaryButton);
+        summaryBox.setSpacing(10);
         
         // Adds new button and checkbox
-        HBox buttonBox3 = new HBox(10);
-        buttonBox3.getChildren().add(summaryButton);
-        buttonBox3.setAlignment(Pos.BOTTOM_RIGHT);
-        grid.add(dates, 0, 20);
-        grid.add(buttonBox3, 2, 20);
+//        HBox buttonBox3 = new HBox(10);
+//        buttonBox3.getChildren().add(summaryButton);
+//        buttonBox3.setAlignment(Pos.BOTTOM_RIGHT);
+        
+        grid.add(summaryBox, 0, 19);
+        grid.setVgap(10);
+        //grid.add(buttonBox3, 2, 20);
         
         primaryStage.setTitle("Batter Application");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
     
+    /* 
+        Created by: James Nagy 4-26-20 - Created the submitPSButtonClicked() method
+    */
     public void submitPSButtonClicked() {      
         
         // set error messages in labels
@@ -429,12 +462,15 @@ public class BatterGUI extends Application {
         }               
     }
     
+    /* 
+        Created by: James Nagy 5-6-20 - Created the getBatterList() method
+    */
     private List<Batter> getBatterList(List<Batter> ListBatter1, List<Batter> ListBatter2) {
         
         List<Batter> combinedList = new ArrayList<Batter>();
         Batter b1, b2, b3;
         
-         for (int i = 0; i < ListBatter1.size(); i++) {
+        for (int i = 0; i < ListBatter1.size(); i++) {
              b1 = ListBatter1.get(i);
              b2 = new Batter(b1.getPlayerName(), 
                              b1.getAtBats(), 
@@ -451,8 +487,7 @@ public class BatterGUI extends Application {
                              b1.getPutout(),
                              b1.getAssist(),
                              b1.getLeftOnBase());
-         }
-        
+        }        
         
         int playerNameMatch = -1;
         for (int i = 0; i < ListBatter2.size(); i++) {
@@ -464,8 +499,7 @@ public class BatterGUI extends Application {
                 b2 = ListBatter1.get(j);
                 if (b1.getPlayerName().equalsIgnoreCase(b2.getPlayerName())) {
                     playerNameMatch = j;
-                }
-                
+                }                
             }
             if (playerNameMatch != -1) {               
                 
@@ -488,37 +522,35 @@ public class BatterGUI extends Application {
             }
             else {
                 combinedList.add(b1); 
-            }
-            
-        }
-        
+            }          
+        }       
         return combinedList;
-    }
+    }   
     
-    
-    
+    /* 
+        Edited by: James Nagy 5-6-20 - Fixed accumulating stats & repeating players
+    */
     public void summaryPSButtonClicked() {
         
         //Defines all fields for the summary
-        double baseHits = 0;
-        double atBats = 0;
-        double batAvg = 0;
-        double doubles = 0;
-        double triples = 0;
-        double homeRuns = 0;
-        double totalBases = 0;
-        double slugPer = 0;
-        double walksAllowed = 0;
-        double hitsByPitch = 0;
-        double sacrificeFly = 0;
-        double basePer = 0;
-
-        double putout = 0;
-        double runsScored = 0;
-        double runsBattedIn = 0;
-        double strikeOut = 0;
-        double assist = 0;
-        double leftOnBase = 0;
+        double baseHits;
+        double atBats;
+        double batAvg;
+        double doubles;
+        double triples;
+        double homeRuns;
+        double totalBases;
+        double slugPer;
+        double walksAllowed;
+        double hitsByPitch;
+        double sacrificeFly;
+        double basePer;
+        double putout;
+        double runsScored;
+        double runsBattedIn;
+        double strikeOut;
+        double assist;
+        double leftOnBase;
         
         //Defines all files to be read
         FILE = new BatterFile("Feb 14, 2020");
@@ -629,15 +661,17 @@ public class BatterGUI extends Application {
         Alert reportAlert = new Alert(Alert.AlertType.INFORMATION);
         reportAlert.setResizable(true);        
         reportAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        reportAlert.getDialogPane().setMinWidth(800);
+        reportAlert.getDialogPane().setMinWidth(875);
         reportAlert.setTitle("Batter Report");
         reportAlert.setHeaderText("Batter Total Summary");
         reportAlert.setContentText(sb.toString());      
         reportAlert.showAndWait();
     }
     
-    public void submitReportButtonClicked() {
-        
+    /* 
+        Created by: James Nagy 4-26-20 - Created the submitReportButtonClicked() method
+    */
+    public void submitReportButtonClicked() {       
         
         /*  Formulas for calculating BA, TB, SLG & OBP
         ------------------------------------------------------------------------      
@@ -767,8 +801,11 @@ public class BatterGUI extends Application {
         reportAlert.setHeaderText("Batter Report for Game Date: " + dateReport);
         reportAlert.setContentText(sb.toString());      
         reportAlert.showAndWait();      
-    }
+    }  
     
+    /* 
+        Created by: James Nagy 4-26-20 - Created the addBatter() method
+    */
     public void addBatter() {
         
         // adds text fields to variables
@@ -786,26 +823,7 @@ public class BatterGUI extends Application {
         int strikeOut = Integer.parseInt(strikeOutField.getText());
         int putout = Integer.parseInt(putoutField.getText());
         int assist = Integer.parseInt(assistField.getText());
-        int leftOnBase = Integer.parseInt(leftOnBaseField.getText());
-        
-        // prints variables to console
-        // uncomment for debugging
-//        System.out.println("Date: " + date);
-//        System.out.println("Name: " + playerName);
-//        System.out.println("At-Bats: " + atBats);
-//        System.out.println("Runs Scored: " + runsScored);
-//        System.out.println("Base Hits: " + baseHits);
-//        System.out.println("Doubles: " + doubles);
-//        System.out.println("Triples: " + triples);
-//        System.out.println("Home Runs: " + homeRuns);
-//        System.out.println("Hit By Pitch: " + hitByPitch);
-//        System.out.println("Runs Batted In: " + runsBattedIn);
-//        System.out.println("Sacrifice Fly: " + sacrificeFly);
-//        System.out.println("Walks Allowed: " + walksAllowed);
-//        System.out.println("Strike Out: " + strikeOut);
-//        System.out.println("Putout: " + putout);
-//        System.out.println("Assist: " + assist);
-//        System.out.println("Left on Base: " + leftOnBase);      
+        int leftOnBase = Integer.parseInt(leftOnBaseField.getText());                   
         
         Batter newBatter = new Batter(playerName, atBats, runsScored, 
                                       baseHits, doubles, triples, homeRuns, 
@@ -818,10 +836,55 @@ public class BatterGUI extends Application {
 
         System.out.println("This entry has been saved.\n");
     }
+    
+    /* 
+        Created by: James Nagy 5-7-20 - Created the submitHelpButtonClicked() method
+    */
+    public void submitHelpButtonClicked() {
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Batter Acronyms     \n").
+           append("--------------------\n").
+           append("R : runs scored     \n").
+           append("H : base hits       \n").
+           append("2B : doubles        \n").
+           append("3B : triples        \n").
+           append("HR : home runs      \n").
+           append("HBP : hit by pitch  \n").
+           append("RBI : runs batted in\n").
+           append("SF : sacrifice fly  \n").
+           append("BB : walks allowed  \n").
+           append("SO : strike out     \n").
+           append("PO : putout         \n").
+           append("A : assist          \n").
+           append("LOB : left on base \n \n \n").
+           append("Formulas for calculating BA, TB, SLG & OBP \n").
+           append("---------------------------------------------------------------------- \n").
+           append("Batting Average = Total number of hits / Total number of at bats \n \n").
+           append("The total bases is calculated in the following way, where TB is the \n").
+           append("total bases and 1B, 2B, 3B, and HR are the number of singles, \n").
+           append("doubles, triples, and home runs, respectively. \n").
+           append("TB = [1B + (2 × 2B) + (3 × 3B) + (4 × HR)] \n \n").
+           append("Slugging Percentage (SLG) = Total Bases ÷ At Bats\n \n").
+           append("On-base percentage is calculated using the following formula, \n").
+           append("where H is Hits, BB is Bases on Balls (Walks), HBP is times Hit By a \n").
+           append("Pitch, AB is At bats, and SF is Sacrifice Flies. \n").
+           append("OBP = (H + BB + HBP) / (AB + BB + HBP + SF) \n").
+           append("----------------------------------------------------------------------");
+        
+        // displays the generated report to the user
+        Alert reportAlert = new Alert(Alert.AlertType.INFORMATION);
+        reportAlert.setResizable(true);        
+        reportAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        reportAlert.getDialogPane().setMinWidth(400);
+        reportAlert.setTitle("Batter Application Help");
+        reportAlert.setHeaderText("Batter Application for Game Date");
+        reportAlert.setContentText(sb.toString());      
+        reportAlert.showAndWait();
+    }
 
-    // main method
-    // add updates here:
-    //
+    // main method    
     public static void main(String[] args) {
         launch(args);
     }   
